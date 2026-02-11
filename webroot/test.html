@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Word Arena - Local Test</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Override for local testing: make body scrollable */
+    body { height: 100vh; }
+    #app { height: 100vh; }
+    .test-banner {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: #e74c3c; color: white; text-align: center;
+      padding: 4px; font-size: 11px; font-weight: 600; z-index: 9999;
+    }
+    .screen { top: 24px; height: calc(100% - 24px); }
+  </style>
+</head>
+<body>
+  <div class="test-banner">LOCAL TEST MODE - Mock DevvitBridge Active</div>
+  <div id="app">
+    <!-- Mode Selection Screen -->
+    <div id="screen-modes" class="screen active">
+      <div class="header">
+        <h1>Word Arena</h1>
+        <p class="subtitle">Daily Word Challenge</p>
+        <div class="streak-badge" id="streak-badge" style="display:none">
+          <span id="streak-count">0</span> day streak
+        </div>
+      </div>
+      <div class="mode-grid" id="mode-grid"></div>
+      <div class="footer-bar">
+        <button class="btn-icon" id="btn-stats" title="Stats">&#x1f4ca;</button>
+        <button class="btn-icon" id="btn-leaderboard" title="Leaderboard">&#x1f3c6;</button>
+        <button class="btn-icon" id="btn-help" title="How to Play">&#x2753;</button>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="screen-game" class="screen">
+      <div class="game-header">
+        <button class="btn-back" id="btn-back-game">&larr;</button>
+        <div class="game-title" id="game-title"></div>
+        <div class="game-timer" id="game-timer">0:00</div>
+      </div>
+      <div id="game-area"></div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="screen-results" class="screen">
+      <div class="results-container">
+        <h2 class="results-title" id="results-title">Results</h2>
+        <div class="results-score" id="results-score"></div>
+        <div class="results-details" id="results-details"></div>
+        <div class="results-emoji" id="results-emoji"></div>
+        <div class="results-rank" id="results-rank"></div>
+        <div class="results-actions">
+          <button class="btn-primary" id="btn-copy-result">Copy Result</button>
+          <button class="btn-secondary" id="btn-play-another">Play Another Mode</button>
+        </div>
+        <div class="copy-toast" id="copy-toast">Copied!</div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="screen-leaderboard" class="screen">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Leaderboard</h2>
+          <button class="btn-close" id="btn-close-lb">&times;</button>
+        </div>
+        <div class="lb-tabs" id="lb-tabs"></div>
+        <div class="lb-list" id="lb-list"></div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="screen-help" class="screen">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>How to Play</h2>
+          <button class="btn-close" id="btn-close-help">&times;</button>
+        </div>
+        <div class="help-content">
+          <div class="help-overview">
+            Word Arena features 4 daily game modes. Each resets at midnight. Complete all 4 to build your streak!
+          </div>
+
+          <div class="help-mode" data-mode="conquest">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x1f3f0;</span>
+              <span class="help-mode-name">Word Conquest</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">Capture territory on a 6x6 grid by unscrambling words</div>
+              <div class="help-rule">Expand from your starting corner into adjacent tiles</div>
+              <div class="help-rule">Time limit: 3 minutes</div>
+              <div class="help-rule"><strong>Scoring:</strong> Total tiles captured</div>
+              <div class="help-rule"><strong>Tip:</strong> Prioritize expanding toward the center for more options</div>
+            </div>
+          </div>
+
+          <div class="help-mode" data-mode="cipher">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x1f510;</span>
+              <span class="help-mode-name">Cipher Breaker</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">Crack 5 code stages of increasing difficulty</div>
+              <div class="help-rule">Stages: scrambles, vowel removal, Caesar shift, cryptogram</div>
+              <div class="help-rule">3 hints available across all stages</div>
+              <div class="help-rule"><strong>Scoring:</strong> Stages completed + time bonus</div>
+              <div class="help-rule"><strong>Tip:</strong> Save hints for the harder cryptogram stages</div>
+            </div>
+          </div>
+
+          <div class="help-mode" data-mode="market">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x1f4c8;</span>
+              <span class="help-mode-name">Word Stock Market</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">Form words from 9 dealt letters, each with a daily price</div>
+              <div class="help-rule">Longer words earn bigger multipliers</div>
+              <div class="help-rule">Time limit: 2 minutes</div>
+              <div class="help-rule"><strong>Scoring:</strong> Total portfolio value</div>
+              <div class="help-rule"><strong>Tip:</strong> Use high-value letters in longer words for maximum return</div>
+            </div>
+          </div>
+
+          <div class="help-mode" data-mode="dungeon">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x2694;&#xfe0f;</span>
+              <span class="help-mode-name">Lexicon Dungeon</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">Battle monsters across 10 floors by spelling words</div>
+              <div class="help-rule">Damage = word length x 5</div>
+              <div class="help-rule">Health potions every 3 floors; boss on floor 10 needs 6+ letter words</div>
+              <div class="help-rule"><strong>Scoring:</strong> Floors cleared</div>
+              <div class="help-rule"><strong>Tip:</strong> Spell the longest words you can to defeat monsters quickly</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="screen-stats" class="screen">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Your Stats</h2>
+          <button class="btn-close" id="btn-close-stats">&times;</button>
+        </div>
+        <div class="stats-content" id="stats-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mock DevvitBridge for local testing -->
+  <script>
+    // Mock: intercept postMessage calls and respond with test data
+    const originalPostMessage = window.parent.postMessage.bind(window.parent);
+    window.parent.postMessage = function(msg, target) {
+      console.log('[Mock Bridge] Sent:', msg);
+      // Simulate async response
+      setTimeout(() => {
+        let response = null;
+        switch (msg.type) {
+          case 'get_daily_modes':
+            response = {
+              type: 'daily_modes',
+              data: {
+                modes: [
+                  { id: 'conquest', name: 'Word Conquest', icon: '\u{1F3F0}', description: 'Capture territory by unscrambling words on a 6x6 grid', timeLimit: 180 },
+                  { id: 'cipher', name: 'Cipher Breaker', icon: '\u{1F510}', description: 'Crack 5 increasingly difficult word codes', timeLimit: 180 },
+                  { id: 'market', name: 'Word Stock Market', icon: '\u{1F4C8}', description: 'Trade letters and build a word portfolio', timeLimit: 120 },
+                  { id: 'dungeon', name: 'Lexicon Dungeon', icon: '\u2694\uFE0F', description: 'Spell words to battle monsters across 10 floors', timeLimit: 300 },
+                ],
+                completed: [],
+              },
+            };
+            break;
+          case 'submit_score':
+            response = {
+              type: 'score_saved',
+              data: {
+                rank: Math.floor(Math.random() * 10) + 1,
+                totalPlayers: Math.floor(Math.random() * 50) + 10,
+                userStats: { gamesPlayed: 5, bestScores: {}, streak: 3, lastPlayDate: new Date().toISOString().split('T')[0] },
+              },
+            };
+            break;
+          case 'get_leaderboard':
+            response = {
+              type: 'leaderboard',
+              data: {
+                entries: [
+                  { username: 'WordMaster99', score: 950, rank: 1 },
+                  { username: 'LetterKing', score: 870, rank: 2 },
+                  { username: 'VocabHero', score: 810, rank: 3 },
+                  { username: 'SpellWiz', score: 720, rank: 4 },
+                  { username: 'TestUser', score: 650, rank: 5 },
+                ],
+              },
+            };
+            break;
+          case 'get_stats':
+            response = {
+              type: 'stats',
+              data: {
+                gamesPlayed: 12,
+                bestScores: { conquest: 32, cipher: 85, market: 1200, dungeon: 95 },
+                streak: 3,
+                lastPlayDate: new Date().toISOString().split('T')[0],
+              },
+            };
+            break;
+        }
+        if (response) {
+          console.log('[Mock Bridge] Response:', response);
+          window.dispatchEvent(new MessageEvent('message', { data: response }));
+        }
+      }, 100);
+    };
+  </script>
+
+  <script src="seed.js"></script>
+  <script src="words.js"></script>
+  <script src="game-conquest.js"></script>
+  <script src="game-cipher.js"></script>
+  <script src="game-market.js"></script>
+  <script src="game-dungeon.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

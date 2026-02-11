@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Word Arena</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Mode Selection Screen -->
+    <div id="screen-modes" class="screen active">
+      <div class="header">
+        <h1>Word Arena</h1>
+        <p class="subtitle">Daily Word Challenge</p>
+        <div class="streak-badge" id="streak-badge" style="display:none">
+          <span id="streak-count">0</span> day streak
+        </div>
+      </div>
+      <div id="daily-content"></div>
+      <div class="footer-bar">
+        <button class="btn-icon" id="btn-stats" title="Stats">&#x1f4ca;</button>
+        <button class="btn-icon" id="btn-leaderboard" title="Leaderboard">&#x1f3c6;</button>
+        <button class="btn-icon" id="btn-help" title="How to Play">&#x2753;</button>
+      </div>
+    </div>
+
+    <!-- Pre-game Instructions Screen -->
+    <div id="screen-pregame" class="screen">
+      <div class="pregame-container">
+        <div class="pregame-header">
+          <button class="btn-back" id="btn-back-pregame">&larr;</button>
+          <div class="pregame-title" id="pregame-title"></div>
+        </div>
+        <div class="pregame-body" id="pregame-body"></div>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="screen-game" class="screen">
+      <div class="game-header">
+        <button class="btn-back" id="btn-back-game">&larr;</button>
+        <div class="game-title" id="game-title"></div>
+        <div class="game-timer" id="game-timer">0:00</div>
+      </div>
+      <div id="game-area"></div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="screen-results" class="screen">
+      <div class="results-container">
+        <h2 class="results-title" id="results-title">Results</h2>
+        <div class="results-score" id="results-score"></div>
+        <div class="results-details" id="results-details"></div>
+        <div class="results-emoji" id="results-emoji"></div>
+        <div class="results-rank" id="results-rank"></div>
+        <div class="results-actions">
+          <button class="btn-primary" id="btn-copy-result">Copy Result</button>
+          <button class="btn-secondary" id="btn-back-home">Back to Home</button>
+        </div>
+        <div class="copy-toast" id="copy-toast">Copied!</div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="screen-leaderboard" class="screen">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Leaderboard</h2>
+          <button class="btn-close" id="btn-close-lb">&times;</button>
+        </div>
+        <div class="lb-tabs" id="lb-tabs"></div>
+        <div class="lb-list" id="lb-list"></div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="screen-help" class="screen">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>How to Play</h2>
+          <button class="btn-close" id="btn-close-help">&times;</button>
+        </div>
+        <div class="help-content">
+          <div class="help-overview">
+            Word Arena features a daily rotating game mode. A new mode appears each day at midnight UTC. Play every day to build your streak!
+          </div>
+
+          <div class="help-mode" data-mode="conquest">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x1f3f0;</span>
+              <span class="help-mode-name">Word Conquest</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">You'll see a 6x6 grid of tiles, each hiding a scrambled word</div>
+              <div class="help-rule">Start in one corner — tap a tile next to your territory to try it</div>
+              <div class="help-rule">Unscramble the word correctly and that tile becomes yours</div>
+              <div class="help-rule">Keep expanding to capture as many tiles as you can in <strong>3 minutes</strong></div>
+              <div class="help-rule"><strong>Tip:</strong> Push toward the center early so you have more tiles to reach</div>
+            </div>
+          </div>
+
+          <div class="help-mode" data-mode="cipher">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x1f510;</span>
+              <span class="help-mode-name">Cipher Breaker</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">You'll be given 5 coded words to decode, one at a time</div>
+              <div class="help-rule">Each stage gets harder — scrambles, missing vowels, shifted letters, then cryptograms</div>
+              <div class="help-rule">Stuck? You have <strong>3 hints</strong> to reveal letters</div>
+              <div class="help-rule">Score is based on stages cleared and how fast you finish</div>
+              <div class="help-rule"><strong>Tip:</strong> Save your hints for the last couple of stages</div>
+            </div>
+          </div>
+
+          <div class="help-mode" data-mode="market">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x1f4c8;</span>
+              <span class="help-mode-name">Word Stock Market</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">You get 9 random letters, each with a price that changes daily</div>
+              <div class="help-rule">Type words using those letters — longer words pay way more</div>
+              <div class="help-rule">You have <strong>2 minutes</strong> to earn as much as you can</div>
+              <div class="help-rule">Your final score is your total earnings</div>
+              <div class="help-rule"><strong>Tip:</strong> Look for long words first — they're worth the most</div>
+            </div>
+          </div>
+
+          <div class="help-mode" data-mode="dungeon">
+            <div class="help-mode-header">
+              <span class="help-mode-icon">&#x2694;&#xfe0f;</span>
+              <span class="help-mode-name">Lexicon Dungeon</span>
+              <span class="help-chevron">&#x25B6;</span>
+            </div>
+            <div class="help-mode-body">
+              <div class="help-rule">Explore a 10-floor dungeon — each floor has a monster blocking your path</div>
+              <div class="help-rule">Spell words to attack — longer words deal more damage</div>
+              <div class="help-rule">Every 3 floors you'll find a health potion to heal up</div>
+              <div class="help-rule">Floor 10 has a boss — you need <strong>6+ letter</strong> words to hurt it</div>
+              <div class="help-rule"><strong>Tip:</strong> Don't waste short words early — save your best for the boss</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="screen-stats" class="screen">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Your Stats</h2>
+          <button class="btn-close" id="btn-close-stats">&times;</button>
+        </div>
+        <div class="stats-content" id="stats-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="seed.js"></script>
+  <script src="words.js"></script>
+  <script src="game-conquest.js"></script>
+  <script src="game-cipher.js"></script>
+  <script src="game-market.js"></script>
+  <script src="game-dungeon.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

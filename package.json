@@ -1,0 +1,24 @@
+{
+  "name": "word-battle-iii",
+  "version": "0.0.0",
+  "description": "Word Arena - Multi-mode daily word game for Reddit",
+  "type": "module",
+  "private": true,
+  "license": "BSD-3-Clause",
+  "main": "src/main.tsx",
+  "scripts": {
+    "build": "devvit build",
+    "upload": "devvit upload",
+    "playtest": "devvit playtest"
+  },
+  "dependencies": {
+    "@devvit/public-api": "0.12.8"
+  },
+  "devDependencies": {
+    "@devvit/tsconfig": "0.12.8",
+    "typescript": "5.8.3"
+  },
+  "devvit": {
+    "runtime": "bunny"
+  }
+}
