@@ -11,18 +11,21 @@
     <!-- Mode Selection Screen -->
     <div id="screen-modes" class="screen active">
       <div class="header">
-        <h1>Word Arena</h1>
-        <p class="subtitle">Daily Word Challenge</p>
+        <div class="header-row">
+          <div class="header-left">
+            <h1>Word Arena</h1>
+          </div>
+          <div class="header-icons">
+            <button class="btn-icon" id="btn-stats" title="Stats">&#x1f4ca;</button>
+            <button class="btn-icon" id="btn-leaderboard" title="Leaderboard">&#x1f3c6;</button>
+            <button class="btn-icon" id="btn-help" title="How to Play">&#x2753;</button>
+          </div>
+        </div>
         <div class="streak-badge" id="streak-badge" style="display:none">
           <span id="streak-count">0</span> day streak
         </div>
       </div>
       <div id="daily-content"></div>
-      <div class="footer-bar">
-        <button class="btn-icon" id="btn-stats" title="Stats">&#x1f4ca;</button>
-        <button class="btn-icon" id="btn-leaderboard" title="Leaderboard">&#x1f3c6;</button>
-        <button class="btn-icon" id="btn-help" title="How to Play">&#x2753;</button>
-      </div>
     </div>
 
     <!-- Pre-game Instructions Screen -->

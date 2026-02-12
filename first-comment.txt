@@ -1,0 +1,23 @@
+Welcome to Word Arena! Here's how it works:
+
+Every day at midnight UTC, a new word game mode drops. There are 4 modes that rotate on a cycle, so you never play the same game two days in a row.
+
+The 4 Modes:
+
+Word Conquest — You start in the corner of a 6x6 grid. Each tile hides a scrambled word. Unscramble it to capture the tile and expand your territory. You've got 3 minutes to conquer as much of the board as you can.
+
+Cipher Breaker — 5 coded words, each harder than the last. It starts with simple scrambles and ends with full cryptograms. You get 3 hints total — save them for the tough ones.
+
+Word Stock Market — You get 9 letters, each with a daily price. Form words to earn coins. Longer words pay way more. You have 2 minutes to build the biggest portfolio you can.
+
+Lexicon Dungeon — A 10-floor dungeon crawl. Spell words to attack monsters — longer words hit harder. The boss on floor 10 only takes damage from 6+ letter words, so come prepared.
+
+What you get:
+- Daily leaderboard — see how you rank against everyone else
+- Streaks — play every day and watch your streak grow. Miss a day and it resets
+- Shareable results — copy your emoji scorecard and flex in the comments
+- Same puzzle for everyone — no RNG excuses, the leaderboard is fair
+
+First time playing a mode? You'll get a quick step-by-step tutorial. After that it drops you straight into the game.
+
+Tap Play and see what today's challenge is!
