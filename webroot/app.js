@@ -17,10 +17,17 @@ class DevvitBridge {
     });
   }
 
-  send(type, payload) {
-    return new Promise((resolve) => {
+  send(type, payload, timeoutMs = 5000) {
+    return new Promise((resolve, reject) => {
       const id = ++this.callbackId;
-      this.pendingCallbacks[type] = resolve;
+      const timer = setTimeout(() => {
+        delete this.pendingCallbacks[type];
+        reject(new Error(`Bridge timeout: ${type}`));
+      }, timeoutMs);
+      this.pendingCallbacks[type] = (msg) => {
+        clearTimeout(timer);
+        resolve(msg);
+      };
       const msg = { type };
       if (payload) msg.payload = payload;
       window.parent.postMessage(msg, '*');
@@ -34,8 +41,18 @@ class DevvitBridge {
       score_saved: 'submit_score',
       leaderboard: 'get_leaderboard',
       stats: 'get_stats',
-      error: null,
     };
+
+    // For error responses, resolve the most recent pending callback
+    if (msg.type === 'error') {
+      const keys = Object.keys(this.pendingCallbacks);
+      if (keys.length > 0) {
+        const lastKey = keys[keys.length - 1];
+        this.pendingCallbacks[lastKey](msg);
+        delete this.pendingCallbacks[lastKey];
+      }
+      return;
+    }
 
     const requestType = mapping[msg.type];
     if (requestType && this.pendingCallbacks[requestType]) {
@@ -165,6 +182,7 @@ class WordArenaApp {
         this.completedModes = response.data.completed || [];
       }
     } catch (e) {
+      console.warn('Failed to fetch daily modes from backend, using local data');
       this.completedModes = [];
     }
     // Merge localStorage completions as backup
@@ -172,6 +190,7 @@ class WordArenaApp {
     const localCompleted = JSON.parse(localStorage.getItem(localKey) || '[]');
     this.completedModes = [...new Set([...this.completedModes, ...localCompleted])];
 
+    // Always render UI regardless of backend status
     this.renderDailyChallenge();
     this.loadStats();
   }
